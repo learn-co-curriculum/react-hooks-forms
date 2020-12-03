@@ -26,22 +26,18 @@ controlled form is **a form that derives its input values from state**. Consider
 following:
 
 ```js
-import React from 'react';
+import React, { useState } from 'react';
 
-class Form extends React.Component {
-  state = {
-    firstName: "John",
-    lastName: "Henry"
-  }
+function Form() {
+  const [firstName, setFirstName] = useState("John")
+  const [lastName, setLastName] = useState("Henry")
 
-  render() {
-    return (
-      <form>
-        <input type="text" name="firstName" value={this.state.firstName} />
-        <input type="text" name="lastName" value={this.state.lastName} />
-      </form>
-    )
-  }
+  return (
+    <form>
+      <input type="text" value={firstName} />
+      <input type="text" value={lastName} />
+    </form>
+  )
 }
 
 export default Form;
@@ -69,31 +65,23 @@ whatever changes a user makes, even if it is adding a single letter in an input.
 For this, we use an event listener, `onChange`, that React has set up for us:
 
 ```js
-<input type="text" onChange={event => this.handleFirstNameChange(event)} value={this.state.firstName} />
-<input type="text" onChange={event => this.handleLastNameChange(event)} value={this.state.lastName} />
+<input type="text" onChange={handleFirstNameChange} value={firstName} />
+<input type="text" onChange={handleLastNameChange} value={lastName} />
 ```
 
 Form inputs in React come with specific events. `onChange` will fire every time
-the value of an input changes. In our example, we're invoking an anonymous
+the value of an input changes. In our example, we're passing a callback function
 function that accepts `event` as its argument. The `event` data being passed in
-is automatically provided by the `onChange` event listener.
-
-The anonymous functions are almost identical, but they actually call two
-different functions, `this.handleFirstNameChange()` and
-`this.handleLastNameChange()`, passing the `event` as an argument. Let's write out
+is automatically provided by the `onChange` event listener. Let's write out
 what these functions look like:
 
 ```js
-handleFirstNameChange = event => {
-  this.setState({
-    firstName: event.target.value
-  })
+function handleFirstNameChange(event) {
+  setFirstName(event.target.value)
 }
 
-handleLastNameChange = event => {
-  this.setState({
-    lastName: event.target.value
-  })
+function handleLastNameChange(event) {
+  setLastName(event.target.value)
 }
 ```
 
@@ -105,55 +93,48 @@ particular `input`!
 Keep in mind, **this is not the value we provided from state**. When we read
 `event.target.value`, we get whatever content is present when the event fired.
 In the case of our first input, that would be a combination of whatever
-`this.state.firstName` is equal to _plus_ **the last key stroke**. If you
+`firstName` is equal to _plus_ **the last key stroke**. If you
 pressed 's', `event.target.value` would equal "Johns".
 
-Inside both functions is `this.setState()`. Again, both functions are nearly
-identical, with one difference &mdash; `handleFirstNameChange()` changes the
-`firstName` attribute, and `handleLastNameChange()` changes the `lastName` attribute.
+Inside both functions is a `setState()`. Again, both functions are nearly
+identical, with one difference &mdash; `setFirstName()` changes the
+`firstName`, and `setLastName()` changes the `lastName`.
 The full component would look like the following:
 
 ```js
-import React from 'react';
+import React, { useState } from 'react';
 
-class Form extends React.Component {
-  state = {
-    firstName: "John",
-    lastName: "Henry"
+function Form() {
+  const [firstName, setFirstName] = useState("John")
+  const [lastName, setLastName] = useState("Henry")
+
+  function handleFirstNameChange(event) {
+    setFirstName(event.target.value)
   }
 
-  handleFirstNameChange = event => {
-    this.setState({
-      firstName: event.target.value
-    })
+  function handleLastNameChange(event) {
+    setLastName(event.target.value)
   }
 
-  handleLastNameChange = event => {
-    this.setState({
-      lastName: event.target.value
-    })
-  }
-
-  render() {
-    return (
-      <form>
-        <input type="text" onChange={event => this.handleFirstNameChange(event)} value={this.state.firstName} />
-        <input type="text" onChange={event => this.handleLastNameChange(event)} value={this.state.lastName} />
-      </form>
-    )
-  }
+  return (
+    <form>
+      <input type="text" onChange={handleFirstNameChange} value={firstName} />
+      <input type="text" onChange={handleLastNameChange} value={lastName} />
+    </form>
+  )
 }
 
 export default Form;
 ```
 
-In the `handleFirstNameChange()` and `handleLastNameChange()` methods, we're updating state based on `event.target.value`. This, in
-turn, causes a re-render... and the cycle completes. The _new_ state values we
-just set are used to set the `value` attributes of our two `input`s. From a
-user's perspective, the form behaves exactly how we'd expect, displaying the
-text that is typed. From React's perspective, we gain control over form values,
-giving us the ability to more easily manipulate (or restrict) what our `inputs`s 
-display, and send form data to other parts of the app or out onto the internet...
+In the `handleFirstNameChange()` and `handleLastNameChange()` functions, we're
+updating state based on `event.target.value`. This, in turn, causes a
+re-render... and the cycle completes. The _new_ state values we just set are
+used to set the `value` attributes of our two `input`s. From a user's
+perspective, the form behaves exactly how we'd expect, displaying the text that
+is typed. From React's perspective, we gain control over form values, giving us
+the ability to more easily manipulate (or restrict) what our `inputs`s display,
+and send form data to other parts of the app or out onto the internet...
 
 <img src="https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_21_FlowchartUpdate.png" width="300" alt="Diagram of onChange events" />
 
@@ -168,32 +149,31 @@ to submit our form. For this, we use a second event, `onSubmit`, added to the
 `form` in JSX:
 
 ```js
-render() {
   return (
-    <form onSubmit={event => this.handleSubmit(event)}>
+    <form onSubmit={handleSubmit}>
       <input
         type="text"
-        onChange={event => this.handleFirstNameChange(event)}
-        value={this.state.firstName}
+        onChange={handleFirstNameChange}
+        value={firstName}
       />
       <input
         type="text"
-        onChange={event => this.handleLastNameChange(event)}
-        value={this.state.lastName}
+        onChange={handleLastNameChange}
+        value={lastName}
       />
     </form>
   )
-}
 ```
 
-Now, whenever the form is submitted (by pressing `Enter`/`Return`, or clicking a Submit button), an anonymous function will be called, `event => this.handleSubmit(event)`. We
-don't have a function `handleSubmit` yet, so let's write one out:
+Now, whenever the form is submitted (by pressing `Enter`/`Return`, or clicking a
+Submit button), a callback function will be called, `handleSubmit`. We don't
+have a function `handleSubmit` yet, so let's write one out:
 
 ```js
-handleSubmit = event => {
+function handleSubmit(event) {
   event.preventDefault()
-  let formData = { firstName: this.state.firstName, lastName: this.state.lastName }
-  this.sendFormDataSomewhere(formData)
+  const formData = { firstName: firstName, lastName: lastName }
+  props.sendFormDataSomewhere(formData)
 }
 ```
 
@@ -207,10 +187,10 @@ Let's look at each of the three lines of code in this function:
 
 [try and submit the form data based on a defined action]: https://www.w3schools.com/html/html_forms.asp
 
-- `let formData = { firstName: this.state.firstName, lastName: this.state.lastName }`: Here, we are putting
+- `const formData = { firstName: firstName, lastName: lastName }`: Here, we are putting
   together the current form data using the values stored in state.
 
-- `this.sendFormDataSomewhere(formData)`: A form, when submitted should send the
+- `props.sendFormDataSomewhere(formData)`: A form, when submitted should send the
   form data somewhere. As mentioned a moment ago, the traditional HTML way was
   to send data to a server or another page using the `action` attribute. In
   React, we handle requests with asynchronous JavaScript. We won't go into the details
@@ -222,66 +202,60 @@ We don't have a server to send our data to, but to demonstrate submission, we co
 modify our `Form` component to list out submissions, storing them in state:
 
 ```js
-import React from 'react';
+import React, { useState } from 'react';
 
-class Form extends React.Component {
-  state = {
-    firstName: "John",
-    lastName: "Henry",
-    submittedData: []
+function Form() {
+  const [firstName, setFirstName] = useState("John")
+  const [lastName, setLastName] = useState("Henry")
+  const [submittedData, setSubmittedData] = useState([])
+
+  function handleFirstNameChange(event) {
+    setFirstName(event.target.value)
   }
 
-  handleFirstNameChange = event => {
-    this.setState({
-      firstName: event.target.value
-    })
+  function handleLastNameChange(event) {
+    setLastName(event.target.value)
   }
 
-  handleLastNameChange = event => {
-    this.setState({
-      lastName: event.target.value
-    })
-  }
-
-  handleSubmit = event => {
+  function handleSubmit(event) {
     event.preventDefault()
-    let formData = { firstName: this.state.firstName, lastName: this.state.lastName }
-    let dataArray = this.state.submittedData.concat(formData)
-    this.setState({submittedData: dataArray})
+    const formData = { firstName: firstName, lastName: lastName }
+    const dataArray = [...submittedData, formData]
+    setSubmittedData(dataArray)
   }
 
-  listOfSubmissions = () => {
-    return this.state.submittedData.map(data => {
-      return <div><span>{data.firstName}</span> <span>{data.lastName}</span></div>
-    })
-  }
-
-  render() {
+  const listOfSubmissions = submittedData.map((data, index) => {
     return (
-      <div>
-        <form onSubmit={event => this.handleSubmit(event)}>
-          <input
-            type="text"
-            onChange={event => this.handleFirstNameChange(event)}
-            value={this.state.firstName}
-          />
-          <input
-            type="text"
-            onChange={event => this.handleLastNameChange(event)}
-            value={this.state.lastName}
-          />
-          <input type="submit"/>
-        </form>
-        {this.listOfSubmissions()}
+      <div key={index}>
+        {data.firstName} {data.lastName}
       </div>
     )
-  }
+  })
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          onChange={handleFirstNameChange}
+          value={firstName}
+        />
+        <input
+          type="text"
+          onChange={handleLastNameChange}
+          value={lastName}
+        />
+      </form>
+      <h3>Submissions</h3>
+      {listOfSubmissions}
+    </div>
+  )
 }
 
 export default Form;
 ```
 
-The above component will render previous form submissionso on the page! We have
+The above component will render previous form submissions on the page! We have
 a fully functioning controlled form.
 
 ## More on Forms
@@ -321,8 +295,8 @@ component is either controlled or uncontrolled, but it cannot be both.
 #### Uncontrolled Components
 
 In uncontrolled components, the state of the component's value is kept in the
-DOM itself like a regular old HTML form— in other words, the form element in
-question (e.g. an `<input>`) has its _own internal state_. To retrieve that
+DOM itself like a regular old HTML form &mdash; in other words, the form element
+in question (e.g. an `<input>`) has its _own internal state_. To retrieve that
 value, we would need direct access to the DOM component that holds the value,
 _or_ we'd have to add an `onChange` handler.
 
@@ -334,21 +308,21 @@ rendering the same thing). Uncontrolled forms still work just fine in React.
 To submit an uncontrolled form, we can use the `onSubmit` handler just as before:
 
 ```js
-<form onSubmit={ event => this.handleSubmit(event) }>
+<form onSubmit={handleSubmit}>
   ...
 </form>
 ```
 
 All the form data in an uncontrolled form is accessible within the `event`, but
 accessing _can_ sometimes be a pain, as you end up writing things like
-`event.target.children[0].value` to get the value of our first input.
+`event.target.firstName.value` to get the value of our first input.
 
 ```js
 handleSubmit = event => {
   event.preventDefault()
-  const firstName = event.target.children[0].value
-  const lastName = event.target.children[1].value
-  this.sendFormDataSomewhere({ firstName, lastName })
+  const firstName = event.target.firstName.value
+  const lastName = event.target.lastName.value
+  props.sendFormDataSomewhere({ firstName, lastName })
 }
 ```
 
@@ -360,12 +334,14 @@ In controlled components, we explicitly set the value of a component using
 state, and update that value in response to any changes the user makes. While
 it takes a little bit of set up to implement, it makes some other parts of our
 code easier. For instance, in a basic controlled form, our `handleSubmit()`
-function can be relatively simple:
+function can be relatively simple if our initial state is an object:
 
 ```js
-handleSubmit = event => {
+const [formData, setFormData] = useState({ firstName: "", lastName: "" })
+
+function handleSubmit(event) {
   event.preventDefault()
-  this.sendFormDataSomewhere(this.state)
+  props.sendFormDataSomewhere(formData)
 }
 ```
 
@@ -388,36 +364,29 @@ just handles the display of JSX:
 
 ```js
 // src/components/ParentComponent
-import React from 'react';
+import React, { useState } from 'react';
 import Form from './Form'
 
-class ParentComponent extends React.Component {
-  state = {
-    firstName: "",
-    lastName: "",
-  }
-  
-  handleFirstNameChange = event => {
-    this.setState({
-      firstName: event.target.value
-    })
+function ParentComponent() {
+  const [firstName, setFirstName] = useState("John")
+  const [lastName, setLastName] = useState("Henry")
+
+  function handleFirstNameChange(event) {
+    setFirstName(event.target.value)
   }
 
-  handleLastNameChange = event => {
-    this.setState({
-      lastName: event.target.value
-    })
+  function handleLastNameChange(event) {
+    setLastName(event.target.value)
   }
 
-  render() {
-    return (
-      <Form
-        formData={this.state}
-        handleFirstNameChange={this.handleFirstNameChange}
-        handleLastNameChange={this.handleLastNameChange}
-      />
-    )
-  }
+  return (
+    <Form
+      firstName={firstName}
+      lastName={lastName}
+      handleFirstNameChange={handleFirstNameChange}
+      handleLastNameChange={handleLastNameChange}
+    />
+  )
 }
 
 export default ParentComponent;
@@ -429,34 +398,32 @@ Then `Form` can become:
 // src/components/Form
 import React from 'react';
 
-class Form extends React.Component {
-  render() {
-    return (
-      <div>
-        <form>
-          <input
-            type="text"
-            onChange={event => this.props.handleFirstNameChange(event)}
-            value={this.props.formData.firstName}
-          />
-          <input
-            type="text"
-            onChange={event => this.props.handleLastNameChange(event)}
-            value={this.props.formData.lastName}
-          />
-        </form>
-      </div>
-    )
-  }
+function Form(props) {
+  return (
+    <div>
+      <form>
+        <input
+          type="text"
+          onChange={props.handleFirstNameChange}
+          value={props.firstName}
+        />
+        <input
+          type="text"
+          onChange={props.handleLastNameChange}
+          value={props.lastName}
+        />
+      </form>
+    </div>
+  )
 }
 
 export default Form;
 ```
 
-Previously, our application was rendering `Form` directly inside `src/index.js`. Now, 
-however, we've added a component that _renders_ `Form` as a child. Because of this
-change, you'll need to update `src/index.js` so that it renders `ParentComponent` instead of
-`Form`.
+Previously, our application was rendering `Form` directly inside `src/index.js`.
+Now, however, we've added a component that _renders_ `Form` as a child. Because
+of this change, you'll need to update `src/index.js` so that it renders
+`ParentComponent` instead of `Form`.
 
 **Aside**: Submission functionality is omitted here for simplicity. Also, If
 you're following along in the example files, don't forget to update `index.js`
@@ -474,15 +441,13 @@ sibling of `Form`, that live displays our form data.
 // src/components/DisplayData
 import React from 'react';
 
-class DisplayData extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>{this.props.formData.firstName}</h1>
-        <h1>{this.props.formData.lastName}</h1>
-      </div>
-    )
-  }
+function DisplayData(props) {
+  return (
+    <div>
+      <h1>{props.firstName}</h1>
+      <h1>{props.lastName}</h1>
+    </div>
+  )
 }
 
 export default DisplayData
@@ -492,24 +457,23 @@ And adding it alongside `Form` (also wrapping both in a `div`:
 
 ```js
 // src/components/ParentComponent
-import React from 'react';
+import React, { useState } from 'react';
 import Form from './Form'
 import DisplayData from './DisplayData'
 
-class ParentComponent extends React.Component {
+function ParentComponent() {
   ...
-  render() {
-    return (
-      <div>
-        <Form
-          formData={this.state}
-          handleFirstNameChange={this.handleFirstNameChange}
-          handleLastNameChange={this.handleLastNameChange}
-        />
-        <DisplayData formData={this.state} />
-      </div>
-    )
-  }
+  return (
+    <div>
+      <Form
+        firstName={firstName} 
+        lastName={lastName}
+        handleFirstNameChange={handleFirstNameChange}
+        handleLastNameChange={handleLastNameChange}
+      />
+      <DisplayData firstName={firstName} lastName={lastName} />
+    </div>
+  )
 }
 ...
 ```
@@ -522,7 +486,7 @@ the form.
 This can be a very useful way to capture user input and utilize it throughout
 your application, even if a server is not involved.
 
-The opposite can also be true - Imagine a user profile page with an 'Edit'
+The opposite can also be true. Imagine a user profile page with an 'Edit'
 button that opens a form for updating user info. When a user clicks that 'Edit'
 button, they expect to see a form with their user data pre-populated. This way,
 they can easily make small changes without rewriting all their profile info.
@@ -560,46 +524,111 @@ previous value, which is pretty tedious!
 ## Bonus - Abstracting `setState` When `onChange` is Triggered
 
 You're still here? Well, while you are, let's talk about the `onChange` event
-we've got set up now in our `ParentComponent`. We have two methods in the
-class that seem very very similar:
+we've got set up now in initial version of our `Form` component. If we look at the original code:
 
-```js
-handleFirstNameChange = event => {
-  this.setState({
-    firstName: event.target.value
-  })
+```jsx
+import React, { useState } from 'react';
+
+function Form() {
+  const [firstName, setFirstName] = useState("John")
+  const [lastName, setLastName] = useState("Henry")
+
+  function handleFirstNameChange(event) {
+    setFirstName(event.target.value)
+  }
+
+  function handleLastNameChange(event) {
+    setLastName(event.target.value)
+  }
+
+  return (
+    <form>
+      <input type="text" onChange={handleFirstNameChange} value={firstName} />
+      <input type="text" onChange={handleLastNameChange} value={lastName} />
+    </form>
+  )
 }
 
-handleLastNameChange = event => {
-  this.setState({
-    lastName: event.target.value
+export default Form;
+```
+
+We can imagine that adding more input fields to this form is going to get repetitive pretty fast. For every new input field, we'd need to add:
+
+- a new `useState()` to hold the value of that input field in state
+- a new `handleChange` function to update that piece of state
+
+As a first refactor, let's use `useState` just once, and make an object representing all of our input fields:
+
+```jsx
+function Form() {
+  const [formData, setFormData] = useState({
+    firstName: "John",
+    lastName: "Henry",
   })
+
+  function handleFirstNameChange(event) {
+    setFormData(prevState => ({
+      ...prevState,
+      firstName: event.target.value
+    }))
+  }
+
+  function handleLastNameChange(event) {
+    setFormData(prevState => ({
+      ...prevState,
+      lastName: event.target.value
+    }))
+  }
+
+  return (
+    <form>
+      <input type="text" onChange={handleFirstNameChange} value={formData.firstName} />
+      <input type="text" onChange={handleLastNameChange} value={formData.lastName} />
+    </form>
+  )
 }
 ```
 
-Since each one is changing a different value in our state, we've got them
-separated here. You can imagine that once we've got a more complicated form,
-this route may result in a very cluttered component. Instead of separate
-methods, we could actually condense this down into one abstracted component.
-Since `event` is being passed in as the argument, we have access to some of the
-`event.target` attributes that may be present.
+Now, we just have one object in state to update whenever a the input field
+changes. Our change handlers are still a bit verbose, however. Since each one is
+changing a different value in our state, we've got them separated here. You can
+imagine that once we've got a more complicated form, this route may result in a
+very cluttered component. Instead of separate methods, we could actually
+condense this down into one abstracted component. Since `event` is being passed
+in as the argument, we have access to some of the `event.target` attributes that
+may be present.
 
 If we give our inputs `name` attributes, we can access them as `event.target.name`:
 
 ```js
-<input type="text" name="firstName" value={this.state.firstName} />
-<input type="text" name="lastName" value={this.state.lastName} />
+<input 
+  type="text" 
+  name="firstName" 
+  value={formData.firstName} 
+  onChange={handleFirstNameChange} 
+/>
+<input 
+  type="text" 
+  name="lastName" 
+  value={formData.lastName} 
+  onChange={handleLastNameChange} 
+/>
 ```
 
-If we make sure the `name` attributes match keys in our state, we can write a
-generic `handleChange` method like so:
+If we make sure the `name` attributes of our `<input>` fields match keys in our
+state, we can write a generic `handleChange` function like so:
 
 ```js
-handleChange = event => {
-  this.setState({
-    [event.target.name]: event.target.value
-  })
-}
+  function handleChange(event) {
+    // name is the KEY in of the formData object we're trying to update
+    const name = event.target.name
+    const value = event.target.value
+
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }))
+  }
 ```
 
 If we connect this method to both of our `input`s, they will both correctly
@@ -607,103 +636,68 @@ update state. Why? Because for the first `input`, `event.target.name` is set to
 `firstName`, while in the second `input`, it is set to `lastName`. Each
 `input`'s `name` attribute will change which part of state is actually updated!
 
-Here is the full, final code using this new function:
+Now, if we want to add a new input field to the form, we just need to add two things:
 
-```js
-// src/components/ParentComponent
-import React from 'react';
-import Form from './Form'
-import DisplayData from './DisplayData'
+- a new key in our `formData` state, and
+- a new `<input>` field where the `name` attribute matches our new key
 
-class ParentComponent extends React.Component {
-  state = {
-    firstName: "",
-    lastName: "",
-  }
-  
-  handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    })
+We can take it one step further, and also handle `checkbox` inputs in our
+`handleChange` input. Since checkboxes have a `checked` attribute instead of the
+`value` attribute, here's what we'd need to check what `type` our input is in
+order to get the correct value in state.
+
+Here's what the final version of our `Form` component looks like:
+
+```jsx
+import React, { useState } from 'react';
+
+function Form() {
+  const [formData, setFormData] = useState({
+    firstName: "John",
+    lastName: "Henry",
+    admin: false
+  })
+
+  function handleChange(event) {
+    const name = event.target.name
+    let value;
+    if (event.target.type === "checkbox") {
+      value = event.target.checked
+    } else {
+      value = event.target.value
+    }
+
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }))
   }
 
-  render() {
-    return (
-      <div>
-        <Form
-          formData={this.state}
-          handleChange={this.handleChange}
-        />
-        <DisplayData formData={this.state} />
-      </div>
-    )
-  }
+  return (
+    <form>
+      <input 
+        type="text" 
+        name="firstName" 
+        onChange={handleChange} 
+        value={formData.firstName} 
+      />
+      <input 
+        type="text" 
+        name="lastName" 
+        onChange={handleChange} 
+        value={formData.lastName} 
+      />
+      <input 
+        type="checkbox" 
+        name="admin" 
+        onChange={handleChange} 
+        checked={formData.admin} 
+      />
+    </form>
+  )
 }
-
-export default ParentComponent;
-```
-
-```js
-// src/components/Form
-import React from 'react';
-
-class Form extends React.Component {
-  render() {
-    return (
-      <div>
-        <form>
-          <input
-            type="text"
-            name="firstName"
-            onChange={event => this.props.handleChange(event)}
-            value={this.props.formData.firstName}
-          />
-          <input
-            type="text"
-            name="lastName"
-            onChange={event => this.props.handleChange(event)}
-            value={this.props.formData.lastName} />
-        </form>
-      </div>
-    )
-  }
-}
-
-export default Form;
-```
-
-```js
-// src/components/DisplayData.js
-import React from 'react';
-
-class DisplayData extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>{this.props.formData.firstName}</h1>
-        <h1>{this.props.formData.lastName}</h1>
-      </div>
-    )
-  }
-}
-
-export default DisplayData
-```
-
-```js
-// src/index.js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import ParentComponent from './components/ParentComponent';
-
-ReactDOM.render(
-  <div>
-    <ParentComponent/>
-  </div>,
-  document.getElementById('root')
-);
 ```
 
 ## Resources
 
-- [React Forms](https://facebook.github.io/react/docs/forms.html)
+- [React Forms](https://reactjs.org/docs/forms.html)

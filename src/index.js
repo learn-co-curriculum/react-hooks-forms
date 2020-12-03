@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 import Form from './components/Form'
 
 ReactDOM.render(
-  <div>
-    <Form />
-  </div>,
+  <Form />,
   document.getElementById('root')
 );
