@@ -22,22 +22,22 @@ to run `npm install && npm start` to see the code in the browser.
 Forms in React are similar to their regular HTML counterparts. The JSX we write
 is almost identical. The way we store and handle form data, however, is entirely
 new. In React, it is often a good idea to set up _controlled_ forms. A
-controlled form is **a form that derives its input values from state**. Consider the
-following:
+controlled form is **a form that derives its input values from state**. Consider
+the following:
 
 ```js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function Form() {
-  const [firstName, setFirstName] = useState("John")
-  const [lastName, setLastName] = useState("Henry")
+  const [firstName, setFirstName] = useState("John");
+  const [lastName, setLastName] = useState("Henry");
 
   return (
     <form>
       <input type="text" value={firstName} />
       <input type="text" value={lastName} />
     </form>
-  )
+  );
 }
 
 export default Form;
@@ -77,11 +77,11 @@ what these functions look like:
 
 ```js
 function handleFirstNameChange(event) {
-  setFirstName(event.target.value)
+  setFirstName(event.target.value);
 }
 
 function handleLastNameChange(event) {
-  setLastName(event.target.value)
+  setLastName(event.target.value);
 }
 ```
 
@@ -93,27 +93,27 @@ particular `input`!
 Keep in mind, **this is not the value we provided from state**. When we read
 `event.target.value`, we get whatever content is present when the event fired.
 In the case of our first input, that would be a combination of whatever
-`firstName` is equal to _plus_ **the last key stroke**. If you
-pressed 's', `event.target.value` would equal "Johns".
+`firstName` is equal to _plus_ **the last key stroke**. If you pressed 's',
+`event.target.value` would equal "Johns".
 
 Inside both functions is a `setState()`. Again, both functions are nearly
-identical, with one difference &mdash; `setFirstName()` changes the
-`firstName`, and `setLastName()` changes the `lastName`.
-The full component would look like the following:
+identical, with one difference &mdash; `setFirstName()` changes the `firstName`,
+and `setLastName()` changes the `lastName`. The full component would look like
+the following:
 
 ```js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function Form() {
-  const [firstName, setFirstName] = useState("John")
-  const [lastName, setLastName] = useState("Henry")
+  const [firstName, setFirstName] = useState("John");
+  const [lastName, setLastName] = useState("Henry");
 
   function handleFirstNameChange(event) {
-    setFirstName(event.target.value)
+    setFirstName(event.target.value);
   }
 
   function handleLastNameChange(event) {
-    setLastName(event.target.value)
+    setLastName(event.target.value);
   }
 
   return (
@@ -121,7 +121,7 @@ function Form() {
       <input type="text" onChange={handleFirstNameChange} value={firstName} />
       <input type="text" onChange={handleLastNameChange} value={lastName} />
     </form>
-  )
+  );
 }
 
 export default Form;
@@ -144,25 +144,17 @@ down as props or sent upward via a function supplied in props.
 
 ## Submitting a Controlled Form
 
-Now that we're controlling the form with `state`, we want to set up a way
-to submit our form. For this, we use a second event, `onSubmit`, added to the
+Now that we're controlling the form with `state`, we want to set up a way to
+submit our form. For this, we use a second event, `onSubmit`, added to the
 `form` in JSX:
 
 ```js
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        onChange={handleFirstNameChange}
-        value={firstName}
-      />
-      <input
-        type="text"
-        onChange={handleLastNameChange}
-        value={lastName}
-      />
-    </form>
-  )
+return (
+  <form onSubmit={handleSubmit}>
+    <input type="text" onChange={handleFirstNameChange} value={firstName} />
+    <input type="text" onChange={handleLastNameChange} value={lastName} />
+  </form>
+);
 ```
 
 Now, whenever the form is submitted (by pressing `Enter`/`Return`, or clicking a
@@ -171,9 +163,9 @@ have a function `handleSubmit` yet, so let's write one out:
 
 ```js
 function handleSubmit(event) {
-  event.preventDefault()
-  const formData = { firstName: firstName, lastName: lastName }
-  props.sendFormDataSomewhere(formData)
+  event.preventDefault();
+  const formData = { firstName: firstName, lastName: lastName };
+  props.sendFormDataSomewhere(formData);
 }
 ```
 
@@ -188,40 +180,41 @@ Let's look at each of the three lines of code in this function:
 [try and submit the form data based on a defined action]: https://www.w3schools.com/html/html_forms.asp
 
 - `const formData = { firstName: firstName, lastName: lastName }`: Here, we are putting
-  together the current form data using the values stored in state.
+  together the current form data into an object using the values stored in state.
 
-- `props.sendFormDataSomewhere(formData)`: A form, when submitted should send the
-  form data somewhere. As mentioned a moment ago, the traditional HTML way was
-  to send data to a server or another page using the `action` attribute. In
-  React, we handle requests with asynchronous JavaScript. We won't go into the details
-  of how this works just yet, but we can think of `sendFormDataSomewhere()` as the
-  code that handles sending our data off. This function might be defined in the same
-  form component, but is more often provided as a prop.
+- `props.sendFormDataSomewhere(formData)`: A form, when submitted should send
+  the form data somewhere. As mentioned a moment ago, the traditional HTML way
+  was to send data to a server or another page using the `action` attribute. In
+  React, we handle requests with asynchronous JavaScript. We won't go into the
+  details of how this works just yet, but we can think of
+  `sendFormDataSomewhere()` as the code that handles sending our data off. This
+  function might be defined in the same form component, but is more often
+  provided as a prop.
 
 We don't have a server to send our data to, but to demonstrate submission, we could
 modify our `Form` component to list out submissions, storing them in state:
 
 ```js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function Form() {
-  const [firstName, setFirstName] = useState("John")
-  const [lastName, setLastName] = useState("Henry")
-  const [submittedData, setSubmittedData] = useState([])
+  const [firstName, setFirstName] = useState("John");
+  const [lastName, setLastName] = useState("Henry");
+  const [submittedData, setSubmittedData] = useState([]);
 
   function handleFirstNameChange(event) {
-    setFirstName(event.target.value)
+    setFirstName(event.target.value);
   }
 
   function handleLastNameChange(event) {
-    setLastName(event.target.value)
+    setLastName(event.target.value);
   }
 
   function handleSubmit(event) {
-    event.preventDefault()
-    const formData = { firstName: firstName, lastName: lastName }
-    const dataArray = [...submittedData, formData]
-    setSubmittedData(dataArray)
+    event.preventDefault();
+    const formData = { firstName: firstName, lastName: lastName };
+    const dataArray = [...submittedData, formData];
+    setSubmittedData(dataArray);
   }
 
   const listOfSubmissions = submittedData.map((data, index) => {
@@ -229,27 +222,19 @@ function Form() {
       <div key={index}>
         {data.firstName} {data.lastName}
       </div>
-    )
-  })
+    );
+  });
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          onChange={handleFirstNameChange}
-          value={firstName}
-        />
-        <input
-          type="text"
-          onChange={handleLastNameChange}
-          value={lastName}
-        />
+        <input type="text" onChange={handleFirstNameChange} value={firstName} />
+        <input type="text" onChange={handleLastNameChange} value={lastName} />
       </form>
       <h3>Submissions</h3>
       {listOfSubmissions}
     </div>
-  )
+  );
 }
 
 export default Form;
@@ -269,7 +254,7 @@ To control the value of these inputs, we use a prop specific to that type of inp
 
 - For `<input>`, `<textarea>`, and `<option>`, we use `value`, as we have seen.
 
-- For `<input type="checkbox">` and `<input type="radio">`, we use `checked`
+- For `<input type="checkbox">`, we use `checked`
 
 Each of these attributes can be set based on a state value. Each also has an
 `onChange` event listener, allowing us to update state when a user interacts
@@ -308,9 +293,7 @@ rendering the same thing). Uncontrolled forms still work just fine in React.
 To submit an uncontrolled form, we can use the `onSubmit` handler just as before:
 
 ```js
-<form onSubmit={handleSubmit}>
-  ...
-</form>
+<form onSubmit={handleSubmit}>...</form>
 ```
 
 All the form data in an uncontrolled form is accessible within the `event`, but
@@ -318,12 +301,12 @@ accessing _can_ sometimes be a pain, as you end up writing things like
 `event.target.firstName.value` to get the value of our first input.
 
 ```js
-handleSubmit = event => {
-  event.preventDefault()
-  const firstName = event.target.firstName.value
-  const lastName = event.target.lastName.value
-  props.sendFormDataSomewhere({ firstName, lastName })
-}
+handleSubmit = (event) => {
+  event.preventDefault();
+  const firstName = event.target.firstName.value;
+  const lastName = event.target.lastName.value;
+  props.sendFormDataSomewhere({ firstName: firstName, lastName: lastName });
+};
 ```
 
 On a larger form this can turn into some dense code.
@@ -337,11 +320,11 @@ code easier. For instance, in a basic controlled form, our `handleSubmit()`
 function can be relatively simple if our initial state is an object:
 
 ```js
-const [formData, setFormData] = useState({ firstName: "", lastName: "" })
+const [formData, setFormData] = useState({ firstName: "", lastName: "" });
 
 function handleSubmit(event) {
-  event.preventDefault()
-  props.sendFormDataSomewhere(formData)
+  event.preventDefault();
+  props.sendFormDataSomewhere(formData);
 }
 ```
 
@@ -353,7 +336,7 @@ sends all _20_ state values wherever we need them to go upon submission.
 ## Why Use Controlled Forms When We Do Not Have To
 
 Controlled forms can very useful for specific purposes - since we can set our
-state _elsewhere_ using this setup, its easy to populate forms from existing 
+state _elsewhere_ using this setup, its easy to populate forms from existing
 available data.
 
 When we have a controlled form, the state does not need to be stored in the same
@@ -364,19 +347,19 @@ just handles the display of JSX:
 
 ```js
 // src/components/ParentComponent
-import React, { useState } from 'react';
-import Form from './Form'
+import React, { useState } from "react";
+import Form from "./Form";
 
 function ParentComponent() {
-  const [firstName, setFirstName] = useState("John")
-  const [lastName, setLastName] = useState("Henry")
+  const [firstName, setFirstName] = useState("John");
+  const [lastName, setLastName] = useState("Henry");
 
   function handleFirstNameChange(event) {
-    setFirstName(event.target.value)
+    setFirstName(event.target.value);
   }
 
   function handleLastNameChange(event) {
-    setLastName(event.target.value)
+    setLastName(event.target.value);
   }
 
   return (
@@ -386,7 +369,7 @@ function ParentComponent() {
       handleFirstNameChange={handleFirstNameChange}
       handleLastNameChange={handleLastNameChange}
     />
-  )
+  );
 }
 
 export default ParentComponent;
@@ -396,7 +379,7 @@ Then `Form` can become:
 
 ```js
 // src/components/Form
-import React from 'react';
+import React from "react";
 
 function Form(props) {
   return (
@@ -414,7 +397,7 @@ function Form(props) {
         />
       </form>
     </div>
-  )
+  );
 }
 
 export default Form;
@@ -439,7 +422,7 @@ sibling of `Form`, that live displays our form data.
 
 ```js
 // src/components/DisplayData
-import React from 'react';
+import React from "react";
 
 function DisplayData(props) {
   return (
@@ -447,10 +430,10 @@ function DisplayData(props) {
       <h1>{props.firstName}</h1>
       <h1>{props.lastName}</h1>
     </div>
-  )
+  );
 }
 
-export default DisplayData
+export default DisplayData;
 ```
 
 And adding it alongside `Form` (also wrapping both in a `div`:
@@ -466,7 +449,7 @@ function ParentComponent() {
   return (
     <div>
       <Form
-        firstName={firstName} 
+        firstName={firstName}
         lastName={lastName}
         handleFirstNameChange={handleFirstNameChange}
         handleLastNameChange={handleLastNameChange}
@@ -524,21 +507,22 @@ previous value, which is pretty tedious!
 ## Bonus - Abstracting `setState` When `onChange` is Triggered
 
 You're still here? Well, while you are, let's talk about the `onChange` event
-we've got set up now in initial version of our `Form` component. If we look at the original code:
+we've got set up now in initial version of our `Form` component. If we look at
+the original code:
 
 ```jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function Form() {
-  const [firstName, setFirstName] = useState("John")
-  const [lastName, setLastName] = useState("Henry")
+  const [firstName, setFirstName] = useState("John");
+  const [lastName, setLastName] = useState("Henry");
 
   function handleFirstNameChange(event) {
-    setFirstName(event.target.value)
+    setFirstName(event.target.value);
   }
 
   function handleLastNameChange(event) {
-    setLastName(event.target.value)
+    setLastName(event.target.value);
   }
 
   return (
@@ -546,47 +530,68 @@ function Form() {
       <input type="text" onChange={handleFirstNameChange} value={firstName} />
       <input type="text" onChange={handleLastNameChange} value={lastName} />
     </form>
-  )
+  );
 }
 
 export default Form;
 ```
 
-We can imagine that adding more input fields to this form is going to get repetitive pretty fast. For every new input field, we'd need to add:
+We can imagine that adding more input fields to this form is going to get
+repetitive pretty fast. For every new input field, we'd need to add:
 
-- a new `useState()` to hold the value of that input field in state
+- a new state variable by calling `useState()` to hold the value of that input
 - a new `handleChange` function to update that piece of state
 
-As a first refactor, let's use `useState` just once, and make an object representing all of our input fields:
+As a first refactor, let's use `useState` just once, and make an object
+representing all of our input fields:
 
 ```jsx
 function Form() {
   const [formData, setFormData] = useState({
     firstName: "John",
     lastName: "Henry",
-  })
+  });
 
   function handleFirstNameChange(event) {
-    setFormData(prevState => ({
-      ...prevState,
-      firstName: event.target.value
-    }))
+    setFormData({
+      ...formData,
+      firstName: event.target.value,
+    });
   }
 
   function handleLastNameChange(event) {
-    setFormData(prevState => ({
-      ...prevState,
-      lastName: event.target.value
-    }))
+    setFormData({
+      ...formData,
+      lastName: event.target.value,
+    });
   }
 
   return (
     <form>
-      <input type="text" onChange={handleFirstNameChange} value={formData.firstName} />
-      <input type="text" onChange={handleLastNameChange} value={formData.lastName} />
+      <input
+        type="text"
+        onChange={handleFirstNameChange}
+        value={formData.firstName}
+      />
+      <input
+        type="text"
+        onChange={handleLastNameChange}
+        value={formData.lastName}
+      />
     </form>
-  )
+  );
 }
+```
+
+Since our initial state is an _object_, we have to copy all the key/value pairs
+from the current version of that object into our new state -- that's what this
+spread operator here is doing:
+
+```js
+setFormData({
+  ...formData, // formData is an object, so we need to copy all the key/value pairs
+  lastName: event.target.value, // we want to overwrite the lastName key with a new value
+});
 ```
 
 Now, we just have one object in state to update whenever a the input field
@@ -601,17 +606,17 @@ may be present.
 If we give our inputs `name` attributes, we can access them as `event.target.name`:
 
 ```js
-<input 
-  type="text" 
-  name="firstName" 
-  value={formData.firstName} 
-  onChange={handleFirstNameChange} 
+<input
+  type="text"
+  name="firstName"
+  value={formData.firstName}
+  onChange={handleFirstNameChange}
 />
-<input 
-  type="text" 
-  name="lastName" 
-  value={formData.lastName} 
-  onChange={handleLastNameChange} 
+<input
+  type="text"
+  name="lastName"
+  value={formData.lastName}
+  onChange={handleLastNameChange}
 />
 ```
 
@@ -619,16 +624,16 @@ If we make sure the `name` attributes of our `<input>` fields match keys in our
 state, we can write a generic `handleChange` function like so:
 
 ```js
-  function handleChange(event) {
-    // name is the KEY in of the formData object we're trying to update
-    const name = event.target.name
-    const value = event.target.value
+function handleChange(event) {
+  // name is the KEY in of the formData object we're trying to update
+  const name = event.target.name;
+  const value = event.target.value;
 
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }))
-  }
+  setFormData({
+    ...formData,
+    [name]: value,
+  });
+}
 ```
 
 If we connect this method to both of our `input`s, they will both correctly
@@ -649,52 +654,52 @@ order to get the correct value in state.
 Here's what the final version of our `Form` component looks like:
 
 ```jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function Form() {
   const [formData, setFormData] = useState({
     firstName: "John",
     lastName: "Henry",
-    admin: false
-  })
+    admin: false,
+  });
 
   function handleChange(event) {
-    const name = event.target.name
-    let value;
+    const name = event.target.name;
+    let value = event.target.value;
+
+    // use `checked` property of checkboxes instead of `value`
     if (event.target.type === "checkbox") {
-      value = event.target.checked
-    } else {
-      value = event.target.value
+      value = event.target.checked;
     }
 
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }))
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   }
 
   return (
     <form>
-      <input 
-        type="text" 
-        name="firstName" 
-        onChange={handleChange} 
-        value={formData.firstName} 
+      <input
+        type="text"
+        name="firstName"
+        onChange={handleChange}
+        value={formData.firstName}
       />
-      <input 
-        type="text" 
-        name="lastName" 
-        onChange={handleChange} 
-        value={formData.lastName} 
+      <input
+        type="text"
+        name="lastName"
+        onChange={handleChange}
+        value={formData.lastName}
       />
-      <input 
-        type="checkbox" 
-        name="admin" 
-        onChange={handleChange} 
-        checked={formData.admin} 
+      <input
+        type="checkbox"
+        name="admin"
+        onChange={handleChange}
+        checked={formData.admin}
       />
     </form>
-  )
+  );
 }
 ```
 
