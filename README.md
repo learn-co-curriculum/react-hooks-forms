@@ -10,7 +10,8 @@ In this lesson, we'll discuss how to set up a controlled form in React.
 2. Check whether a component is controlled or uncontrolled
 3. Describe strategies for using controlled components
 4. Use controlled inputs to validate values
-5. Distinguish between `value` and `defaultValue` in a React controlled component
+5. Distinguish between `value` and `defaultValue` in a React controlled
+   component
 
 ## Code Along
 
@@ -43,22 +44,22 @@ function Form() {
 export default Form;
 ```
 
-With the setup above, the two text `input`s will display the corresponding state
-values.
+With the setup above, the two text `input` elements will display the
+corresponding state values.
 
-<img src="https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_20_Flowchart.png" width="300" alt="Diagram of the form component's state populating a form"/>
+<img src="https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_20_Flowchart.png" width="300" alt="Diagram of the form component's state populating a form" />
 
-This code is not quite complete though - as it is now, there is no way to _change_
-the state. The inputs in the form above will be stuck displaying whatever state is
-set to.
+This code is not quite complete though &mdash; as it is now, there is no way to
+_change_ the state. The inputs in the form above will be stuck displaying
+whatever state is set to.
 
 To completely control a form, we also need our form to _update_ state.
 
 ## Updating State via Forms
 
 If we can change state values, React will re-render and our `input`s will
-display the new state. We know that `setState` is what we'll need to initiate a
-state change, but when would we fire it?
+display the new state. We know that `setFirstName` and `setLastName` are what
+we'll need to initiate a state change, but when would we use them?
 
 We want to fire it **every time the form changes**. Forms should display
 whatever changes a user makes, even if it is adding a single letter in an input.
@@ -86,7 +87,7 @@ function handleLastNameChange(event) {
 ```
 
 The `event` contains data about the `target`, which is whatever DOM element the
-`event` was triggered on. That `target`, being an `input`, has a `value`
+`event` was triggered on. That `target`, being an `input` element, has a `value`
 attribute. This attribute is equal to whatever is currently entered into that
 particular `input`!
 
@@ -418,7 +419,7 @@ With `ParentComponent`, we've moved all the form logic up one level.
 
 Being able to store controlled form data in other components opens some
 interesting doors for us. We could, for instance, create another component, a
-sibling of `Form`, that live displays our form data.
+sibling of `Form`, that live displays our form data:
 
 ```js
 // src/components/DisplayData
@@ -436,7 +437,7 @@ function DisplayData(props) {
 export default DisplayData;
 ```
 
-And adding it alongside `Form` (also wrapping both in a `div`:
+...and adding it alongside `Form` (also wrapping both in a `div`:
 
 ```js
 // src/components/ParentComponent
@@ -504,7 +505,7 @@ entered regardless, since we don't have control over the internal state of the
 input. In our `onChange` handler, we'd have to roll the input back to its
 previous value, which is pretty tedious!
 
-## Bonus - Abstracting `setState` When `onChange` is Triggered
+## Bonus - Abstracting setState When onChange is Triggered
 
 You're still here? Well, while you are, let's talk about the `onChange` event
 we've got set up now in initial version of our `Form` component. If we look at
@@ -584,13 +585,15 @@ function Form() {
 ```
 
 Since our initial state is an _object_, we have to copy all the key/value pairs
-from the current version of that object into our new state -- that's what this
-spread operator here is doing:
+from the current version of that object into our new state &mdash; that's what
+this spread operator here is doing:
 
 ```js
 setFormData({
-  ...formData, // formData is an object, so we need to copy all the key/value pairs
-  lastName: event.target.value, // we want to overwrite the lastName key with a new value
+  // formData is an object, so we need to copy all the key/value pairs
+  ...formData,
+  // we want to overwrite the lastName key with a new value
+  lastName: event.target.value,
 });
 ```
 
