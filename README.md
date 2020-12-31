@@ -37,6 +37,7 @@ function Form() {
     <form>
       <input type="text" value={firstName} />
       <input type="text" value={lastName} />
+      <button type="submit">Submit</button>
     </form>
   );
 }
@@ -47,7 +48,7 @@ export default Form;
 With the setup above, the two text `input` elements will display the
 corresponding state values.
 
-<img src="https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_20_Flowchart.png" width="300" alt="Diagram of the form component's state populating a form" />
+![Diagram of the form component's state populating a form](https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_20_Flowchart.png)
 
 This code is not quite complete though &mdash; as it is now, there is no way to
 _change_ the state. The inputs in the form above will be stuck displaying
@@ -121,6 +122,7 @@ function Form() {
     <form>
       <input type="text" onChange={handleFirstNameChange} value={firstName} />
       <input type="text" onChange={handleLastNameChange} value={lastName} />
+      <button type="submit">Submit</button>
     </form>
   );
 }
@@ -137,7 +139,7 @@ is typed. From React's perspective, we gain control over form values, giving us
 the ability to more easily manipulate (or restrict) what our `inputs`s display,
 and send form data to other parts of the app or out onto the internet...
 
-<img src="https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_21_FlowchartUpdate.png" width="300" alt="Diagram of onChange events" />
+![Diagram of onChange events](https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_21_FlowchartUpdate.png)
 
 Controlling forms makes it more convenient to share form values between
 components. Since the form values are stored in state, they are easily passed
@@ -154,6 +156,7 @@ return (
   <form onSubmit={handleSubmit}>
     <input type="text" onChange={handleFirstNameChange} value={firstName} />
     <input type="text" onChange={handleLastNameChange} value={lastName} />
+    <button type="submit">Submit</button>
   </form>
 );
 ```
@@ -167,6 +170,8 @@ function handleSubmit(event) {
   event.preventDefault();
   const formData = { firstName: firstName, lastName: lastName };
   props.sendFormDataSomewhere(formData);
+  setFirstName("");
+  setLastName("");
 }
 ```
 
@@ -191,6 +196,12 @@ Let's look at each of the three lines of code in this function:
   `sendFormDataSomewhere()` as the code that handles sending our data off. This
   function might be defined in the same form component, but is more often
   provided as a prop.
+- `setFirstName("")`: if we want to clear the input fields, all we need to do is
+  set state! In a traditional JavaScript form, you might do something like
+  `event.target.reset()` to clear out the form fields. Here, we need to ensure
+  that our component state matches what the user sees in the form. By setting
+  state, we're keeping our React component state in sync with what the user
+  sees.
 
 We don't have a server to send our data to, but to demonstrate submission, we could
 modify our `Form` component to list out submissions, storing them in state:
@@ -216,6 +227,8 @@ function Form() {
     const formData = { firstName: firstName, lastName: lastName };
     const dataArray = [...submittedData, formData];
     setSubmittedData(dataArray);
+    setFirstName("");
+    setLastName("");
   }
 
   const listOfSubmissions = submittedData.map((data, index) => {
@@ -231,6 +244,7 @@ function Form() {
       <form onSubmit={handleSubmit}>
         <input type="text" onChange={handleFirstNameChange} value={firstName} />
         <input type="text" onChange={handleLastNameChange} value={lastName} />
+        <button type="submit">Submit</button>
       </form>
       <h3>Submissions</h3>
       {listOfSubmissions}
@@ -278,7 +292,7 @@ components can optionally have a `defaultValue` prop to set its initial value.
 These two props (`value` and `defaultValue`) are _mutually exclusive_: a
 component is either controlled or uncontrolled, but it cannot be both.
 
-#### Uncontrolled Components
+### Uncontrolled Components
 
 In uncontrolled components, the state of the component's value is kept in the
 DOM itself like a regular old HTML form &mdash; in other words, the form element
@@ -384,20 +398,19 @@ import React from "react";
 
 function Form(props) {
   return (
-    <div>
-      <form>
-        <input
-          type="text"
-          onChange={props.handleFirstNameChange}
-          value={props.firstName}
-        />
-        <input
-          type="text"
-          onChange={props.handleLastNameChange}
-          value={props.lastName}
-        />
-      </form>
-    </div>
+    <form>
+      <input
+        type="text"
+        onChange={props.handleFirstNameChange}
+        value={props.firstName}
+      />
+      <input
+        type="text"
+        onChange={props.handleLastNameChange}
+        value={props.lastName}
+      />
+      <button type="submit">Submit</button>
+    </form>
   );
 }
 
@@ -415,7 +428,7 @@ to point to `ParentComponent`.
 
 With `ParentComponent`, we've moved all the form logic up one level.
 
-<img src="https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_22_FlowchartReactProps.png" width="300" alt="Diagram of a controlled component using props" />
+![Diagram of a controlled component using props](https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_22_FlowchartReactProps.png)
 
 Being able to store controlled form data in other components opens some
 interesting doors for us. We could, for instance, create another component, a
@@ -446,7 +459,7 @@ import Form from './Form'
 import DisplayData from './DisplayData'
 
 function ParentComponent() {
-  ...
+  // ...
   return (
     <div>
       <Form
@@ -465,7 +478,7 @@ function ParentComponent() {
 Now we have a component that reads from the same state we're changing with
 the form.
 
-<img src="https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_23_FlowchartControlled.png" width="300" alt="Diagram of controlled components using props" />
+![Diagram of controlled components using props](https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_23_FlowchartControlled.png)
 
 This can be a very useful way to capture user input and utilize it throughout
 your application, even if a server is not involved.
@@ -530,6 +543,7 @@ function Form() {
     <form>
       <input type="text" onChange={handleFirstNameChange} value={firstName} />
       <input type="text" onChange={handleLastNameChange} value={lastName} />
+      <button type="submit">Submit</button>
     </form>
   );
 }
@@ -681,8 +695,13 @@ function Form() {
     });
   }
 
+  function handleSubmit(event) {
+    event.preventDefault();
+    console.log(formData);
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <input
         type="text"
         name="firstName"
@@ -701,6 +720,7 @@ function Form() {
         onChange={handleChange}
         checked={formData.admin}
       />
+      <button type="submit">Submit</button>
     </form>
   );
 }
