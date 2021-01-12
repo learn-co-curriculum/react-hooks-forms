@@ -316,12 +316,12 @@ accessing _can_ sometimes be a pain, as you end up writing things like
 `event.target.firstName.value` to get the value of our first input.
 
 ```js
-handleSubmit = (event) => {
+function handleSubmit(event) {
   event.preventDefault();
   const firstName = event.target.firstName.value;
   const lastName = event.target.lastName.value;
   props.sendFormDataSomewhere({ firstName: firstName, lastName: lastName });
-};
+}
 ```
 
 On a larger form this can turn into some dense code.
