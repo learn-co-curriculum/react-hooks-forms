@@ -1,26 +1,27 @@
-# React Controlled Inputs
+# Controlled Components
+
+## Learning Goals
+
+- Understand what "controlled components" means in React
+- Implement controlled components by synchronizing input values with component
+  state
 
 ## Overview
 
 In this lesson, we'll discuss how to set up controlled inputs in React.
 
-## Objectives
-
-1. Explain how React uses `value` on, e.g., `<input>`
-2. Describe strategies for using controlled components
-
-## Code Along
-
-If you want to code along there is starter code in the `src` folder. Make sure
+If you want to code along, there is starter code in the `src` folder. Make sure
 to run `npm install && npm start` to see the code in the browser.
 
 ## Controlling Form Values From State
 
 Forms in React are similar to their regular HTML counterparts. The JSX we write
 is almost identical. The way we store and handle form data, however, is entirely
-new. In React, it is often a good idea to set up _controlled_ forms. A
-controlled form is **a form that derives its input values from state**. Consider
-the following:
+new.
+
+In React, it is often a good idea to set up _controlled_ forms. A controlled
+form is **a form that derives its input values from state**. Consider the
+following:
 
 ```js
 import React, { useState } from "react";
@@ -58,7 +59,7 @@ If we can change state values, React will re-render and our `input`s will
 display the new state. We know that `setFirstName` and `setLastName` are what
 we'll need to initiate a state change, but when would we use them?
 
-We want to fire it **every time the form changes**. Forms should display
+We want to fire it **every time the input value changes**. Forms should display
 whatever changes a user makes, even if it is adding a single letter in an input.
 For this, we use an event listener, `onChange`, that React has set up for us:
 
@@ -67,11 +68,11 @@ For this, we use an event listener, `onChange`, that React has set up for us:
 <input type="text" onChange={handleLastNameChange} value={lastName} />
 ```
 
-Form inputs in React can handle with specific events. `onChange` will fire every
-time the value of an input changes. In our example, we're passing a callback
-function function that accepts `event` as its argument. The `event` data being
-passed in is automatically provided by the `onChange` event listener. Let's
-write out what these functions look like:
+We can listen for several types of events on input fields. `onChange` will fire
+every time the value of an input changes. In our example, we're passing a
+callback function function that accepts `event` as its argument. The `event`
+data being passed in is automatically provided by the `onChange` event listener.
+Let's write out what these functions look like:
 
 ```js
 function handleFirstNameChange(event) {
@@ -94,10 +95,10 @@ In the case of our first input, that would be a combination of whatever
 `firstName` is equal to _plus_ **the last key stroke**. If you pressed 's',
 `event.target.value` would equal "Johns".
 
-Inside both functions is a `setState()`. Again, both functions are nearly
-identical, with one difference &mdash; `setFirstName()` changes the `firstName`,
-and `setLastName()` changes the `lastName`. The full component would look like
-the following:
+Inside both functions is a function to update state. Again, both functions are
+nearly identical, with one difference &mdash; `setFirstName()` changes the
+`firstName`, and `setLastName()` changes the `lastName`. The full component
+would look like the following:
 
 ```js
 import React, { useState } from "react";
@@ -291,13 +292,13 @@ function DisplayData(props) {
 export default DisplayData;
 ```
 
-...and adding it alongside `Form` (also wrapping both in a `div`:
+...and adding it alongside `Form` (also wrapping both in a `div`):
 
 ```js
 // src/components/ParentComponent
-import React, { useState } from 'react';
-import Form from './Form'
-import DisplayData from './DisplayData'
+import React, { useState } from "react";
+import Form from "./Form";
+import DisplayData from "./DisplayData";
 
 function ParentComponent() {
   // ...
@@ -311,9 +312,8 @@ function ParentComponent() {
       />
       <DisplayData firstName={firstName} lastName={lastName} />
     </div>
-  )
+  );
 }
-...
 ```
 
 Now we have a component that reads from the same state we're changing with
@@ -335,9 +335,9 @@ user information, that information is stored _somewhere_ on the app.
 
 ## Conclusion
 
-Using a controlled component is the preferred way to do things in React — it
-allows us to keep _all_ component state in the React state, instead of relying
-on the DOM to retrieve the element's value through its internal state.
+Using a controlled component is the preferred way to do things in React &mdash;
+it allows us to keep _all_ component state in the React state, instead of
+relying on the DOM to retrieve the element's value through its internal state.
 
 Using a controlled form, whenever our state changes, the component re-renders,
 rendering the input with the new updated value. If we don't update the state,
