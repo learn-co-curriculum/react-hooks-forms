@@ -192,7 +192,7 @@ with a form.
 
 ## Why Use Controlled Forms When We Do Not Have To
 
-Controlled forms can very useful for specific purposes &mdash; since we can set
+Controlled forms can be very useful for specific purposes &mdash; since we can set
 our state _elsewhere_ using this setup, its easy to populate forms from existing
 available data.
 
