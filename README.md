@@ -47,7 +47,7 @@ corresponding state values.
 
 ![Diagram of the form component's state populating a form](https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_20_Flowchart.png)
 
-This code is not quite complete though &mdash; as it is now, there is no way to
+This code is not quite complete though — as it is now, there is no way to
 _change_ the state. The inputs in the form above will be stuck displaying
 whatever state is set to.
 
@@ -96,7 +96,7 @@ In the case of our first input, that would be a combination of whatever
 `event.target.value` would equal "Johns".
 
 Inside both functions is a function to update state. Again, both functions are
-nearly identical, with one difference &mdash; `setFirstName()` changes the
+nearly identical, with one difference — `setFirstName()` changes the
 `firstName`, and `setLastName()` changes the `lastName`. The full component
 would look like the following:
 
@@ -192,7 +192,7 @@ with a form.
 
 ## Why Use Controlled Forms When We Do Not Have To
 
-Controlled forms can be very useful for specific purposes &mdash; since we can set
+Controlled forms can be very useful for specific purposes — since we can set
 our state _elsewhere_ using this setup, its easy to populate forms from existing
 available data.
 
@@ -335,7 +335,7 @@ user information, that information is stored _somewhere_ on the app.
 
 ## Conclusion
 
-Using a controlled component is the preferred way to do things in React &mdash;
+Using a controlled component is the preferred way to do things in React —
 it allows us to keep _all_ component state in the React state, instead of
 relying on the DOM to retrieve the element's value through its internal state.
 
