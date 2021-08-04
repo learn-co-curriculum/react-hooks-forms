@@ -23,7 +23,7 @@ In React, it is often a good idea to set up _controlled_ forms. A controlled
 form is **a form that derives its input values from state**. Consider the
 following:
 
-```js
+```jsx
 import React, { useState } from "react";
 
 function Form() {
@@ -63,7 +63,7 @@ We want to fire it **every time the input value changes**. Forms should display
 whatever changes a user makes, even if it is adding a single letter in an input.
 For this, we use an event listener, `onChange`, that React has set up for us:
 
-```js
+```jsx
 <input type="text" onChange={handleFirstNameChange} value={firstName} />
 <input type="text" onChange={handleLastNameChange} value={lastName} />
 ```
@@ -74,7 +74,7 @@ callback function function that accepts `event` as its argument. The `event`
 data being passed in is automatically provided by the `onChange` event listener.
 Let's write out what these functions look like:
 
-```js
+```jsx
 function handleFirstNameChange(event) {
   setFirstName(event.target.value);
 }
@@ -100,7 +100,7 @@ nearly identical, with one difference — `setFirstName()` changes the
 `firstName`, and `setLastName()` changes the `lastName`. The full component
 would look like the following:
 
-```js
+```jsx
 import React, { useState } from "react";
 
 function Form() {
@@ -202,7 +202,7 @@ this, we'll need to create a new component. To keep it simple, we'll call this
 `ParentComponent`. `ParentComponent` can maintain all the functions while `Form`
 just handles the display of JSX:
 
-```js
+```jsx
 // src/components/ParentComponent
 import React, { useState } from "react";
 import Form from "./Form";
@@ -234,7 +234,7 @@ export default ParentComponent;
 
 Then `Form` can become:
 
-```js
+```jsx
 // src/components/Form
 import React from "react";
 
@@ -276,7 +276,7 @@ Being able to store controlled form data in other components opens some
 interesting doors for us. We could, for instance, create another component, a
 sibling of `Form`, that live displays our form data:
 
-```js
+```jsx
 // src/components/DisplayData
 import React from "react";
 
@@ -294,7 +294,7 @@ export default DisplayData;
 
 ...and adding it alongside `Form` (also wrapping both in a `div`):
 
-```js
+```jsx
 // src/components/ParentComponent
 import React, { useState } from "react";
 import Form from "./Form";
