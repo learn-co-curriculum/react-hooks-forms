@@ -268,12 +268,12 @@ Now, however, we've added a component that renders `Form` as a child. Because
 of this change, you'll need to update `src/index.js` so that it renders
 `ParentComponent` instead of `Form`.
 
-**Note**: If you're following along in the example files, don't forget to update
-`index.js` to point to `ParentComponent`. If you don't make this change, the
-behavior of the form inputs will appear the same, but they will just be regular
-HTML input fields — they will not be controlled. To verify this, you can log
-`event.target.value` from inside the `handleFirstNameChange` and
-`handleLastNameChange` functions in `ParentComponent`.
+> **Note**: If you're following along in the example files, don't forget to
+> update `index.js` to point to `ParentComponent`. If you don't make this
+> change, the behavior of the form inputs will appear the same, but they will
+> just be regular HTML input fields — they will not be controlled. To verify
+> this, you can log `event.target.value` from inside the `handleFirstNameChange`
+> and `handleLastNameChange` functions in `ParentComponent`.
 
 With `ParentComponent`, we've moved all the form logic up one level.
 
