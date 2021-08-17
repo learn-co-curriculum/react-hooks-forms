@@ -2,16 +2,19 @@
 
 ## Learning Goals
 
-- Understand what "controlled components" means in React
+- Understand what "controlled components" are in React
 - Implement controlled components by synchronizing input values with component
   state
 
-## Overview
+## Introduction
 
 In this lesson, we'll discuss how to set up controlled inputs in React.
 
 If you want to code along, there is starter code in the `src` folder. Make sure
 to run `npm install && npm start` to see the code in the browser.
+
+> Note: in the examples in this lesson, form submission functionality is omitted
+> for simplicity.
 
 ## Controlling Form Values From State
 
@@ -70,9 +73,9 @@ For this, we use an event listener, `onChange`, that React has set up for us:
 
 We can listen for several types of events on input fields. `onChange` will fire
 every time the value of an input changes. In our example, we're passing a
-callback function function that accepts `event` as its argument. The `event`
-data being passed in is automatically provided by the `onChange` event listener.
-Let's write out what these functions look like:
+callback function that accepts `event` as its argument. The `event` data being
+passed in is automatically provided by the `onChange` event listener. Let's
+write out what these functions look like:
 
 ```jsx
 function handleFirstNameChange(event) {
@@ -95,8 +98,8 @@ In the case of our first input, that would be a combination of whatever
 `firstName` is equal to _plus_ **the last key stroke**. If you pressed 's',
 `event.target.value` would equal "Johns".
 
-Inside both functions is a function to update state. Again, both functions are
-nearly identical, with one difference — `setFirstName()` changes the
+Inside both functions is a function to update state. The two functions are
+nearly identical, with just one difference: `setFirstName()` changes the
 `firstName`, and `setLastName()` changes the `lastName`. The full component
 would look like the following:
 
@@ -161,11 +164,11 @@ To control the value of these inputs, we use a prop specific to that type of inp
 import React, { useState } from "react";
 
 function Form() {
-  const [newsetter, setNewsetter] = useState(false);
+  const [newsletter, setNewsletter] = useState(false);
 
   function handleNewsletterChange(event) {
     // .checked, not .value!
-    setNewsetter(event.target.checked);
+    setNewsletter(event.target.checked);
   }
 
   return (
@@ -176,7 +179,7 @@ function Form() {
         id="newsletter"
         onChange={handleNewsletterChange}
         {/* checked instead of value */}
-        checked={newsetter}
+        checked={newsletter}
       />
       <button type="submit">Submit</button>
     </form>
@@ -186,20 +189,21 @@ function Form() {
 export default Form;
 ```
 
-Each of these attributes can be set based on a state value. Each also has an
-`onChange` event listener, allowing us to update state when a user interacts
-with a form.
+Each of the input types has an `onChange` event listener, allowing us to update
+state when a user interacts with a form. Once that happens, the `value` or
+`checked` attribute is then set based on the updated state value. Combining
+these two steps is what enables us to set up controlled forms.
 
 ## Why Use Controlled Forms When We Do Not Have To
 
 Controlled forms can be very useful for specific purposes — since we can set
-our state _elsewhere_ using this setup, its easy to populate forms from existing
+our state _elsewhere_ using this setup, it's easy to populate forms from existing
 available data.
 
 When we have a controlled form, the state does not need to be stored in the same
 component. We could store state in a parent component, instead. To demonstrate
 this, we'll need to create a new component. To keep it simple, we'll call this
-`ParentComponent`. `ParentComponent` can maintain all the functions while `Form`
+`ParentComponent`. `ParentComponent` can hold all the functions while `Form`
 just handles the display of JSX:
 
 ```jsx
@@ -260,13 +264,16 @@ export default Form;
 ```
 
 Previously, our application was rendering `Form` directly inside `src/index.js`.
-Now, however, we've added a component that _renders_ `Form` as a child. Because
+Now, however, we've added a component that renders `Form` as a child. Because
 of this change, you'll need to update `src/index.js` so that it renders
 `ParentComponent` instead of `Form`.
 
-**Aside**: Submission functionality is omitted here for simplicity. Also, If
-you're following along in the example files, don't forget to update `index.js`
-to point to `ParentComponent`.
+**Note**: If you're following along in the example files, don't forget to update
+`index.js` to point to `ParentComponent`. If you don't make this change, the
+behavior of the form inputs will appear the same, but they will just be regular
+HTML input fields — they will not be controlled. To verify this, you can log
+`event.target.value` from inside the `handleFirstNameChange` and
+`handleLastNameChange` functions in `ParentComponent`.
 
 With `ParentComponent`, we've moved all the form logic up one level.
 
