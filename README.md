@@ -154,10 +154,10 @@ When we talk about inputs in this lesson, we broadly mean the form elements
 (`<input>`, `<textarea>`, `<select>`) and not always specifically just
 `<input>`.
 
-To control the value of these inputs, we use a prop specific to that type of input:
+To control the value of these inputs, we use a prop specific to that type of
+input:
 
-- For `<input>`, `<textarea>`, and `<option>`, we use `value`, as we have seen.
-
+- For `<input>`, `<textarea>`, and `<select>`, we use `value`, as we have seen.
 - For a checkbox (`<input type="checkbox">`), we use `checked`:
 
 ```jsx
@@ -196,8 +196,8 @@ these two steps is what enables us to set up controlled forms.
 
 ## Why Use Controlled Forms When We Do Not Have To
 
-Controlled forms can be very useful for specific purposes — since we can set
-our state _elsewhere_ using this setup, it's easy to populate forms from existing
+Controlled forms can be very useful for specific purposes — since we can set our
+state _elsewhere_ using this setup, it's easy to populate forms from existing
 available data.
 
 When we have a controlled form, the state does not need to be stored in the same
@@ -242,19 +242,16 @@ Then `Form` can become:
 // src/components/Form
 import React from "react";
 
-function Form(props) {
+function Form({
+  firstName,
+  lastName,
+  handleFirstNameChange,
+  handleLastNameChange,
+}) {
   return (
     <form>
-      <input
-        type="text"
-        onChange={props.handleFirstNameChange}
-        value={props.firstName}
-      />
-      <input
-        type="text"
-        onChange={props.handleLastNameChange}
-        value={props.lastName}
-      />
+      <input type="text" onChange={handleFirstNameChange} value={firstName} />
+      <input type="text" onChange={handleLastNameChange} value={lastName} />
       <button type="submit">Submit</button>
     </form>
   );
@@ -264,8 +261,8 @@ export default Form;
 ```
 
 Previously, our application was rendering `Form` directly inside `src/index.js`.
-Now, however, we've added a component that renders `Form` as a child. Because
-of this change, you'll need to update `src/index.js` so that it renders
+Now, however, we've added a component that renders `Form` as a child. Because of
+this change, you'll need to update `src/index.js` so that it renders
 `ParentComponent` instead of `Form`.
 
 > **Note**: If you're following along in the example files, don't forget to
@@ -281,17 +278,18 @@ With `ParentComponent`, we've moved all the form logic up one level.
 
 Being able to store controlled form data in other components opens some
 interesting doors for us. We could, for instance, create another component, a
-sibling of `Form`, that live displays our form data:
+sibling of `Form`, that displays our form data as soon as a user starts filling
+in the form:
 
 ```jsx
 // src/components/DisplayData
 import React from "react";
 
-function DisplayData(props) {
+function DisplayData({ firstName, lastName }) {
   return (
     <div>
-      <h1>{props.firstName}</h1>
-      <h1>{props.lastName}</h1>
+      <h1>{firstName}</h1>
+      <h1>{lastName}</h1>
     </div>
   );
 }
@@ -323,48 +321,94 @@ function ParentComponent() {
 }
 ```
 
-Now we have a component that reads from the same state we're changing with
-the form.
+Now we have a component that reads from the same state we're changing with the
+form.
 
 ![Diagram of controlled components using props](https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_23_FlowchartControlled.png)
 
 This can be a very useful way to capture user input and utilize it throughout
 your application, even if a server is not involved.
 
-The opposite can also be true. Imagine a user profile page with an 'Edit'
-button that opens a form for updating user info. When a user clicks that 'Edit'
-button, they expect to see a form with their user data pre-populated. This way,
-they can easily make small changes without rewriting all their profile info.
+The opposite can also be true. Imagine a user profile page with an 'Edit' button
+that opens a form for updating user info. When a user clicks that 'Edit' button,
+they expect to see a form with their user data pre-populated. This way, they can
+easily make small changes without rewriting all their profile info.
 
 Just like we did with `ParentComponent`, this could be achieved by populating a
 form with data from props! After all, if we have a React app that is displaying
 user information, that information is stored _somewhere_ on the app.
 
-## Conclusion
+## Controlled Forms for Validation
 
-Using a controlled component is the preferred way to do things in React —
-it allows us to keep _all_ component state in the React state, instead of
-relying on the DOM to retrieve the element's value through its internal state.
+It might seem a little counterintuitive that we need to be so verbose when
+working with forms in React, but this actually opens the door to additional
+functionality. For example, let's say we want to write an input that only takes
+the numbers `0` through `5`. We can now validate the data the user enters
+_before_ we set it on the state, allowing us to block any invalid values:
 
-Using a controlled form, whenever our state changes, the component re-renders,
-rendering the input with the new updated value. If we don't update the state,
-our input will not update when the user types. In other words, we need to
-update our input's state _programmatically_.
+```jsx
+function Form() {
+  const [number, setNumber] = useState(0);
 
-It might seem a little counterintuitive that we need to be so verbose, but this
-actually opens the door to additional functionality. For example, let's say we
-want to write an input that only takes the numbers `0` through `5`. We can now
-validate the data the user enters _before_ we set it on the state, allowing us
-to block any invalid values. If the input is invalid, we simply avoid updating
-the state, preventing the input from updating. We could optionally set another
-state property (for example, `isInvalidNumber`). Using that state property, we
-can show an error in our component to indicate that the user tried to enter an
-invalid value.
+  function handleNumberChange(event) {
+    const newNumber = parseInt(event.target.value);
+    if (newNumber >= 0 && newNumber <= 5) {
+      setNumber(newNumber);
+    }
+  }
+
+  return (
+    <form>
+      <input type="number" value={number} onChange={handleNumberChange} />
+    </form>
+  );
+}
+```
+
+If the input is invalid, we simply avoid updating the state, preventing the
+input from updating. We could optionally set another state property (for
+example, `isInvalidNumber`). Using that state property, we can show an error in
+our component to indicate that the user tried to enter an invalid value:
+
+```jsx
+function Form() {
+  const [number, setNumber] = useState(0);
+  const [error, setError] = useState(null);
+
+  function handleNumberChange(event) {
+    const newNumber = parseInt(event.target.value);
+    if (newNumber >= 0 && newNumber <= 5) {
+      setNumber(newNumber);
+      setError(null);
+    } else {
+      setError(`${newNumber} is not a valid number!`);
+    }
+  }
+
+  return (
+    <form>
+      <input type="number" value={number} onChange={handleNumberChange} />
+      {error ? <span style={{ color: "red" }}>{error}</span> : null}
+    </form>
+  );
+}
+```
 
 If we tried to do this using an uncontrolled component, the input would be
 entered regardless, since we don't have control over the internal state of the
 input. In our `onChange` handler, we'd have to roll the input back to its
 previous value, which is pretty tedious!
+
+## Conclusion
+
+Using a controlled component is the preferred way to do things in React — it
+allows us to keep _all_ component state in the React state, instead of relying
+on the DOM to retrieve the element's value through its internal state.
+
+Using a controlled form, whenever our state changes, the component re-renders,
+rendering the input with the new updated value. If we don't update the state,
+our input will not update when the user types. In other words, we need to update
+our input's state _programmatically_.
 
 ## Resources
 
